@@ -4,26 +4,23 @@ import Web3Modal from 'web3modal'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router'
 
-import Marketplace from '../contracts/optimism-contracts/Marketplace.json'
-import BoredPetsNFT from '../contracts/optimism-contracts/BoredPetsNFT.json'
-// import Marketplace from '../contracts/ethereum-contracts/Marketplace.json'
-// import BoredPetsNFT from '../contracts/ethereum-contracts/BoredPetsNFT.json'
+const projectId = '2GqzSp1SnpYOaJou6MGYWQVOOtN';
+const projectSecret = '298eb62251de4a38f4a246ca3b2af73b';
+const auth ='Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64')
+//const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
+const client =  ipfsHttpClient({
+	        host: 'ipfs.infura.io',
+	        port: 5001,
+	        protocol: 'https',
+	        headers: {
+			          authorization: auth
+			        }
+	      })
 
-const projectId = process.env["NEXT_PUBLIC_IPFS_KEY"];
-const projectSecret = process.env["NEXT_PUBLIC_IPFS_SECRET"];
-const auth =
-    'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
-
-const client = ipfsHttpClient({
-    host: 'ipfs.infura.io',
-    port: 5001,
-    protocol: 'https',
-    headers: {
-        authorization: auth,
-    },
-});
-
-const IPFSGateway = `https://${process.env["NEXT_PUBLIC_IPFS_SUBDOMAIN"]}.infura-ipfs.io/ipfs/`;
+//import Marketplace from '../contracts/optimism-contracts/Marketplace.json'
+//import BoredPetsNFT from '../contracts/optimism-contracts/BoredPetsNFT.json'
+import Marketplace from '../contracts/ethereum-contracts/Marketplace.json'
+import BoredPetsNFT from '../contracts/ethereum-contracts/BoredPetsNFT.json'
 
 export default function CreateItem() {
   const [fileUrl, setFileUrl] = useState(null)
@@ -40,7 +37,7 @@ export default function CreateItem() {
           progress: (prog) => console.log(`received: ${prog}`)
         }
       )
-      const url = `${IPFSGateway}${added.path}`
+      const url = `https://yaguang.infura-ipfs.io/ipfs/${added.path}`
       setFileUrl(url)
     } catch (error) {
       console.log('Error uploading file: ', error)
@@ -58,7 +55,7 @@ export default function CreateItem() {
       })
       try {
         const added = await client.add(data)
-        const url = `${IPFSGateway}${added.path}`
+        const url = `https://yaguang.infura-ipfs.io/ipfs/${added.path}`
         // after metadata is uploaded to IPFS, return the URL to use it in the transaction
         return url
       } catch (error) {
